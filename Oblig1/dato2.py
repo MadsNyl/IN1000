@@ -1,3 +1,4 @@
+# sjekker datoer opp mot hverandre og rekkefølgen med datoen i ett heltall
 print('Skriv inn en datoer med ett tall for dag og måned, i riktig rekkefølge. Format "måned" + "dag": 0525')
 dato1 = input('Første dato: ')
 dato2 = input('Andre dato: ')
