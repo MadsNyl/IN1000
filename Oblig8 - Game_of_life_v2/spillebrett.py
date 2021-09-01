@@ -7,16 +7,15 @@ class Spillebrett:
         self._kolonner = kolonner
         self.generasjon = 0
         self.brett = []
-    
+        self._generer()
+
     def tegnBrett(self):
-        for rader in range(self._rader):
-            ny_rad = []
-            for kolonne in range(self._kolonner):
-                celle = Celle() 
-                ny_rad.append(celle.tegnPresentasjon())
-            self.brett.append(ny_rad)
         for linje in self.brett:
-            print(linje)
+            for celle in linje:
+                print(celle.tegnPresentasjon(), end="")
+            print()
+        antall_levende = self.finnAntallNaboer()
+        print(f'Generasjon: {self.generasjon} - Antall levende celler: {antall_levende}')
 
     def _generer(self):
         for rader in range(self._rader):
@@ -25,10 +24,16 @@ class Spillebrett:
                 celle = Celle()
                 if random.randint(1, 3) == 1:
                     celle.settLevende()
-                ny_rad.append(celle.tegnPresentasjon())
+                ny_rad.append(celle)
             self.brett.append(ny_rad)
+    
+    def finnAntallNaboer(self):
+        antall_levende = 0
         for linje in self.brett:
-            print(linje)
+            for celle in linje:
+                if celle.levende:
+                    antall_levende += 1
+        return antall_levende
 
     def finnNabo(self, rad, kolonne):
         nabo_liste = []
@@ -127,26 +132,42 @@ class Spillebrett:
                 nabo_liste.append(nedHøyre_nabo)
 
         return nabo_liste
-    
+
+
     def oppdatering(self):
-        # bli_levende = []
-        # bli_døde = []
+        bli_levende = []
+        bli_død = []
         for rad_verdi, rad in enumerate(self.brett):
             for celle_verdi, celle in enumerate(rad):
-                naboer = self.finnNabo(rad_verdi, celle_verdi)
-                antall_levende = 0
-                for nabo in naboer: 
-                    if nabo == 'o':
-                        antall_levende += 1
-                if celle == 'o':
-                    if antall_levende < 2:
-                        celle = '.'
-                    elif antall_levende <= 3:
-                        celle = 'o'
-                elif celle == '.':
-                    if antall_levende == 3:
-                        celle = 'o'
+                if celle.levende:
+                    naboer = self.finnNabo(rad_verdi, celle_verdi)
+                    i_live = 0
+                    for nabo in naboer:
+                        if nabo.levende:
+                            i_live += 1
+                    if i_live < 2:
+                        bli_død.append(celle)
                     else:
-                        celle = '.'
-        print(self.brett)
+                        bli_levende.append(celle)
+                
+                else:
+                    naboer = self.finnNabo(rad_verdi, celle_verdi)
+                    i_live = 0
+                    for nabo in naboer:
+                        if nabo.levende:
+                            i_live += 1
+                    if i_live == 3:
+                        bli_levende.append(celle)
+                    else:
+                        bli_død.append(celle)
+
+        
+        for celle in bli_levende:
+            celle.settLevende()
+        print()
+        for celle in bli_død:
+            celle.settDoed()
+        self.generasjon += 1
+
+
         

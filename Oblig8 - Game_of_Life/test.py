@@ -1,10 +1,13 @@
 from celle import Celle
+from spillebrett import Spillebrett
 import random
 
-celle = Celle()
+spillebrett = Spillebrett(3, 3)
+#spillebrett.tegnBrett()
+spillebrett._generer()
 
-celle.settLevende()
+print('*' * 20)
 
+print(spillebrett.brett)
+spillebrett.oppdatering()
 
-
-print(celle.tegnPresentasjon())
